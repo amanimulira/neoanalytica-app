@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Email Subscribers ───
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  source    String   @default("website") // website, linkedin, blog, lead_magnet
+  status    String   @default("active")  // active, unsubscribed, bounced
+  tags      String   @default("[]")      // JSON array of tags
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  downloads LeadMagnetDownload[]
+
+  @@index([status])
+  @@index([source])
+  @@index([createdAt])
+}
+
+// ─── Lead Magnet Downloads ───
+model LeadMagnetDownload {
+  id           String   @id @default(cuid())
+  subscriberId String
+  magnetName   String   // "data-stack-framework", "pipeline-health-check"
+  downloadedAt DateTime @default(now())
+
+  subscriber Subscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+
+  @@index([magnetName])
+  @@index([downloadedAt])
+}
+
+// ─── Consultation Bookings ───
+model ConsultationBooking {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  company     String?
+  source      String   @default("website") // website, linkedin, google, email_outreach
+  status      String   @default("pending") // pending, confirmed, completed, no_show, cancelled
+  notes       String?
+  scheduledAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status])
+  @@index([source])
+  @@index([createdAt])
+}
+
+// ─── Dashboard Metrics (time-series) ───
+model DashboardMetric {
+  id        String   @id @default(cuid())
+  date      DateTime
+  category  String   // visitors, leads, consultations, outreach, costs, pipeline
+  channel   String   // organic, paid, direct, referral, linkedin, email, total
+  metric    String   // count, rate, cost, revenue
+  value     Float
+  createdAt DateTime @default(now())
+
+  @@unique([date, category, channel, metric])
+  @@index([date])
+  @@index([category])
+}
+
+// ─── Admin Users ───
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // bcrypt hash
+  name      String?
+  role      String   @default("admin") // admin, viewer
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Outreach Tracking ───
+model OutreachCampaign {
+  id              String   @id @default(cuid())
+  name            String
+  channel         String   // linkedin, email
+  status          String   @default("active") // active, paused, completed
+  totalSent       Int      @default(0)
+  totalOpened     Int      @default(0)
+  totalReplied    Int      @default(0)
+  totalBooked     Int      @default(0)
+  startDate       DateTime
+  endDate         DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([channel])
+  @@index([status])
+}
+
+// ─── Pipeline / Deals ───
+model Deal {
+  id             String   @id @default(cuid())
+  company        String
+  contactName    String
+  contactEmail   String
+  value          Float
+  status         String   @default("proposal") // lead, proposal, negotiation, closed_won, closed_lost
+  source         String   // organic, paid, linkedin, email, referral
+  packageType    String?  // pipeline_builder, etl_overhaul, streaming
+  notes          String?
+  closedAt       DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([status])
+  @@index([source])
+  @@index([createdAt])
+}
