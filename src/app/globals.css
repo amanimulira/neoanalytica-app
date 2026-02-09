@@ -2,30 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Satoshi:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --accent: #0D9668;
-  --accent-dim: #0B7D57;
-  --accent-light: #E6F7F0;
-  --dark: #111827;
+  --bg:#0A0A0B; --bg2:#111113; --bg3:#19191D; --surface:#1E1E23;
+  --border:rgba(255,255,255,0.06); --border2:rgba(255,255,255,0.1);
+  --text:#F4F4F5; --text2:#A1A1AA; --text3:#71717A;
+  --accent:#34D399; --accent-glow:rgba(52,211,153,0.15); --accent-dim:#059669;
+  --violet:#A78BFA; --amber:#FBBF24;
 }
 
 * { box-sizing: border-box; }
-
+html { scroll-behavior: smooth; }
 body {
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
 }
 
-::selection {
-  background: var(--accent-light);
-  color: var(--dark);
-}
-
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #F3F4F6; }
-::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 3px; }
+::selection { background: var(--accent); color: var(--bg); }
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 9px; }
 
 @layer utilities {
   .text-balance { text-wrap: balance; }

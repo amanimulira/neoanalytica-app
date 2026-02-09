@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neo Analytica — Data Engineering That Ships in Weeks</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Satoshi:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0A0A0B; --bg2:#111113; --bg3:#19191D; --surface:#1E1E23;
+  --border:rgba(255,255,255,0.06); --border2:rgba(255,255,255,0.1);
+  --text:#F4F4F5; --text2:#A1A1AA; --text3:#71717A;
+  --accent:#34D399; --accent-glow:rgba(52,211,153,0.15); --accent-dim:#059669;
+  --violet:#A78BFA; --amber:#FBBF24;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Satoshi',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:9px}
+
+/* Grain */
+body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:0.5}
+
+.ctr{max-width:1200px;margin:0 auto;padding:0 24px}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;transition:all .4s cubic-bezier(.16,1,.3,1)}
+.nav.s{background:rgba(10,10,11,0.8);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border)}
+.nav-i{display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo-m{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--accent),var(--accent-dim));font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;color:var(--bg);box-shadow:0 0 20px var(--accent-glow)}
+.logo-t{font-weight:700;font-size:17px;color:var(--text);letter-spacing:-.3px}
+.nl{display:flex;align-items:center;gap:32px}
+.nl a{font-size:13px;color:var(--text3);text-decoration:none;font-weight:500;transition:color .2s}
+.nl a:hover{color:var(--text)}
+.nc{padding:10px 22px;border-radius:9px;font-size:13px;font-weight:600;text-decoration:none;background:var(--accent);color:var(--bg);transition:all .3s;box-shadow:0 0 20px var(--accent-glow),inset 0 1px 0 rgba(255,255,255,0.2)}
+.nc:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(52,211,153,0.3)}
+.mt{display:none;background:none;border:none;color:var(--text);font-size:24px;cursor:pointer}
+.mm{display:none}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:120px 0 80px}
+.hg{position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:900px;height:900px;border-radius:50%;background:radial-gradient(ellipse,rgba(52,211,153,0.08),rgba(52,211,153,0.02) 40%,transparent 70%);pointer-events:none}
+.hg2{position:absolute;top:100px;right:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(ellipse,rgba(167,139,250,0.06),transparent 60%);pointer-events:none}
+.hgrid{position:absolute;inset:0;pointer-events:none;opacity:0.03;background-image:linear-gradient(rgba(255,255,255,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.5) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 60% 50% at 50% 40%,black,transparent)}
+.hc{position:relative;z-index:2;max-width:800px}
+.hb{display:inline-flex;align-items:center;gap:8px;padding:6px 16px 6px 8px;border-radius:100px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.15);font-size:12px;font-weight:600;color:var(--accent);margin-bottom:32px;animation:fu .8s ease both}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pu 2s infinite}
+.hero h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(42px,6vw,80px);line-height:1.05;letter-spacing:-.03em;margin-bottom:24px;animation:fu .8s .1s ease both}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hs{font-size:clamp(16px,1.8vw,19px);line-height:1.65;color:var(--text2);max-width:560px;margin-bottom:40px;animation:fu .8s .2s ease both}
+.ha{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:48px;animation:fu .8s .3s ease both}
+.bp{padding:14px 28px;border-radius:10px;font-family:inherit;font-size:14px;font-weight:600;background:var(--accent);color:var(--bg);border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .3s;position:relative;overflow:hidden;box-shadow:0 0 24px var(--accent-glow),inset 0 1px 0 rgba(255,255,255,0.2)}
+.bp:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(52,211,153,0.25)}
+.bp::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.15),transparent);pointer-events:none}
+.bs{padding:14px 28px;border-radius:10px;font-family:inherit;font-size:14px;font-weight:600;background:transparent;color:var(--text);border:1px solid var(--border2);cursor:pointer;text-decoration:none;transition:all .3s}
+.bs:hover{background:var(--surface);border-color:var(--text3)}
+.hp{display:flex;gap:24px;flex-wrap:wrap;animation:fu .8s .4s ease both}
+.hp span{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text3)}
+.hp svg{width:14px;height:14px;color:var(--accent)}
+
+/* MARQUEE */
+.mw{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:20px 0;overflow:hidden;white-space:nowrap}
+.mi-inner{display:inline-flex;gap:48px;animation:mq 30s linear infinite}
+.mi-inner span{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:2px;display:flex;align-items:center;gap:10px}
+.mi-inner span::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--accent)}
+@keyframes mq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* SECTIONS */
+.sec{padding:120px 0;position:relative}
+.sl{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--accent);margin-bottom:16px;font-weight:500}
+.st{font-family:'Instrument Serif',serif;font-size:clamp(32px,4vw,52px);line-height:1.1;letter-spacing:-.03em;margin-bottom:16px;font-weight:400}
+.sd{font-size:16px;line-height:1.7;color:var(--text2);max-width:560px;margin-bottom:56px}
+
+/* BENTO PROBLEMS */
+.bg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.bc{padding:32px 28px;border-radius:16px;border:1px solid var(--border);background:var(--bg2);position:relative;overflow:hidden;transition:all .4s cubic-bezier(.16,1,.3,1)}
+.bc:hover{border-color:var(--border2);transform:translateY(-4px);background:var(--bg3)}
+.bc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(52,211,153,0.3),transparent);opacity:0;transition:opacity .4s}
+.bc:hover::before{opacity:1}
+.bi{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:20px;background:linear-gradient(135deg,rgba(239,68,68,0.1),rgba(239,68,68,0.05));border:1px solid rgba(239,68,68,0.1)}
+.bc h3{font-size:16px;font-weight:700;margin-bottom:8px;letter-spacing:-.3px}
+.bc p{font-size:13px;color:var(--text3);line-height:1.6}
+
+/* PACKAGES */
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pc{padding:36px 32px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);position:relative;overflow:hidden;transition:all .4s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column}
+.pc:hover{border-color:var(--border2);transform:translateY(-4px)}
+.pc.f{border-color:rgba(52,211,153,0.2);background:linear-gradient(170deg,var(--bg2),rgba(52,211,153,0.04))}
+.pc.f::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent-dim),var(--accent),var(--accent-dim))}
+.pb2{position:absolute;top:20px;right:20px;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:var(--accent);color:var(--bg)}
+.ptg{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
+.pn{font-family:'Instrument Serif',serif;font-size:24px;margin-bottom:12px;letter-spacing:-.5px}
+.pds{font-size:13px;color:var(--text3);line-height:1.6;margin-bottom:24px}
+.pfl{list-style:none;margin-bottom:auto;padding-bottom:24px}
+.pfl li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text2);margin-bottom:10px}
+.pfl li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:7px}
+.pft{padding-top:20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ptm{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3)}
+.pct{padding:10px 20px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;background:var(--accent);color:var(--bg);transition:all .3s;box-shadow:0 0 16px var(--accent-glow)}
+.pct:hover{transform:translateY(-1px);box-shadow:0 0 24px rgba(52,211,153,0.3)}
+
+/* STEPS */
+.ssg{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.sc2{padding:40px 32px;border:1px solid var(--border);background:var(--bg2);transition:all .3s}
+.sc2:first-child{border-radius:20px 0 0 20px}
+.sc2:last-child{border-radius:0 20px 20px 0}
+.sc2:not(:first-child){border-left:none}
+.sc2:hover{background:var(--bg3)}
+.sn{font-family:'Instrument Serif',serif;font-size:64px;line-height:1;background:linear-gradient(180deg,rgba(52,211,153,0.2),transparent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px}
+.sc2 h3{font-size:16px;font-weight:700;margin-bottom:8px;letter-spacing:-.3px}
+.sc2 p{font-size:13px;color:var(--text3);line-height:1.6}
+
+/* STATS */
+.sr{display:grid;grid-template-columns:repeat(4,1fr);border-radius:20px;overflow:hidden;border:1px solid var(--border);margin-bottom:56px}
+.sta{padding:40px 32px;text-align:center;background:var(--bg2);border-right:1px solid var(--border);transition:background .3s}
+.sta:last-child{border-right:none}
+.sta:hover{background:var(--bg3)}
+.stv{font-family:'Instrument Serif',serif;font-size:48px;color:var(--accent);letter-spacing:-2px;line-height:1;margin-bottom:8px}
+.stl{font-size:13px;color:var(--text3)}
+
+/* TESTIMONIALS */
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tc{padding:32px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);transition:all .4s;position:relative}
+.tc:hover{border-color:var(--border2);transform:translateY(-4px)}
+.tc::before{content:'\201C';position:absolute;top:16px;right:24px;font-family:'Instrument Serif',serif;font-size:80px;line-height:1;color:rgba(52,211,153,0.08)}
+.tq{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:24px;font-style:italic}
+.tau{display:flex;align-items:center;gap:12px}
+.tav{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--bg);background:linear-gradient(135deg,var(--accent),var(--violet))}
+.tnm{font-size:13px;font-weight:600}
+.trl{font-size:11px;color:var(--text3)}
+
+/* LEAD MAGNET */
+.mag{border-radius:24px;border:1px solid var(--border);background:linear-gradient(170deg,var(--bg2),rgba(52,211,153,0.03));overflow:hidden;display:grid;grid-template-columns:1fr 1fr}
+.mgc{padding:56px 48px}
+.mgv{display:flex;align-items:center;justify-content:center;padding:40px;position:relative;overflow:hidden}
+.mgv::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(52,211,153,0.06),transparent 60%)}
+.mgd{width:200px;aspect-ratio:3/4;border-radius:12px;border:1px solid var(--border2);background:var(--bg);padding:24px;position:relative;z-index:2;box-shadow:0 20px 60px rgba(0,0,0,0.3);transform:rotate(-3deg)}
+.mgd .ln{height:3px;border-radius:2px;margin-bottom:6px}
+.ef{display:flex;gap:8px;margin-top:24px}
+.ei{flex:1;padding:14px 18px;border-radius:10px;border:1px solid var(--border2);background:var(--bg);color:var(--text);font-family:inherit;font-size:14px;outline:none;transition:border-color .2s}
+.ei:focus{border-color:var(--accent)}
+.ei::placeholder{color:var(--text3)}
+.eb{padding:14px 24px;border-radius:10px;border:none;background:var(--accent);color:var(--bg);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .3s;box-shadow:0 0 20px var(--accent-glow)}
+.eb:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(52,211,153,0.3)}
+
+/* FAQ */
+.fqg{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:900px}
+details{padding:24px 28px;border-radius:14px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;transition:all .3s}
+details:hover{border-color:var(--border2)}
+details[open]{background:var(--bg3);border-color:var(--border2)}
+summary{font-size:14px;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary .ic{width:20px;height:20px;color:var(--text3);transition:transform .3s;flex-shrink:0}
+details[open] summary .ic{transform:rotate(45deg)}
+details p{margin-top:16px;font-size:13px;color:var(--text3);line-height:1.7}
+
+/* CTA */
+.fc{text-align:center;padding:120px 0;position:relative}
+.fc::before{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:700px;height:500px;border-radius:50%;background:radial-gradient(ellipse,rgba(52,211,153,0.08),transparent 60%);pointer-events:none}
+.ur{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--amber);margin-bottom:32px}
+.gu{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-top:32px}
+.gu span{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px}
+
+/* FOOTER + STICKY */
+.fot{border-top:1px solid var(--border);padding:32px 0}
+.foti{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.fol{display:flex;gap:24px}
+.fol a{font-size:12px;color:var(--text3);text-decoration:none;transition:color .2s}
+.fol a:hover{color:var(--text)}
+.fot p{font-size:12px;color:var(--text3)}
+.sb{position:fixed;bottom:-60px;left:0;right:0;z-index:100;background:rgba(10,10,11,0.9);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:12px 0;transition:bottom .4s cubic-bezier(.16,1,.3,1)}
+.sb.v{bottom:0}
+.sb .ctr{display:flex;align-items:center;justify-content:space-between}
+.sb p{font-size:13px;color:var(--text2)}
+.sb .bp{padding:10px 20px;font-size:12px}
+
+/* ANIMATIONS */
+@keyframes fu{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.4}}
+.rv{opacity:0;transform:translateY(32px);transition:all .7s cubic-bezier(.16,1,.3,1)}
+.rv.vi{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+.pg,.ssg{grid-template-columns:1fr 1fr}
+.ssg .sc2:first-child{border-radius:20px 0 0 0}.ssg .sc2:nth-child(2){border-radius:0 20px 0 0;border-left:none}.ssg .sc2:nth-child(3){border-radius:0 0 0 20px;border-top:none}.ssg .sc2:last-child{border-radius:0 0 20px 0;border-left:none;border-top:none}
+}
+@media(max-width:768px){
+.ctr{padding:0 20px}.nl{display:none}.mt{display:block}
+.mm.op{display:flex;flex-direction:column;gap:0;position:absolute;top:100%;left:0;right:0;background:rgba(10,10,11,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:12px 24px}
+.mm a{display:block;padding:12px 0;font-size:14px;color:var(--text2);text-decoration:none;border-bottom:1px solid var(--border)}
+.mm .nc{display:block;text-align:center;margin-top:8px;border-bottom:none;color:var(--bg);padding:12px;border-radius:9px}
+.hero{padding:100px 0 60px;min-height:auto}.hero h1{font-size:36px}
+.bg{grid-template-columns:1fr 1fr}.pg{grid-template-columns:1fr}
+.ssg{grid-template-columns:1fr}.ssg .sc2{border-radius:0!important;border-left:1px solid var(--border)!important}.ssg .sc2:first-child{border-radius:20px 20px 0 0!important}.ssg .sc2:last-child{border-radius:0 0 20px 20px!important}.ssg .sc2:not(:first-child){border-top:none}
+.sr{grid-template-columns:1fr 1fr}.sta{border-bottom:1px solid var(--border)}
+.tg{grid-template-columns:1fr}.mag{grid-template-columns:1fr}.mgv{display:none}.mgc{padding:36px 28px}
+.fqg{grid-template-columns:1fr}.ef{flex-direction:column}.ha{flex-direction:column}.ha a{text-align:center;justify-content:center}
+.gu{flex-direction:column;align-items:center}.sec{padding:80px 0}
+}
+@media(max-width:480px){.bg{grid-template-columns:1fr}.sr{grid-template-columns:1fr}.sta{border-right:none}.hp{flex-direction:column;gap:12px}}
+</style>
+</head>
+<body>
+<nav class="nav" id="nav"><div class="ctr nav-i"><a href="#" class="logo"><div class="logo-m">N</div><span class="logo-t">Neo Analytica</span></a><div class="nl"><a href="#packages">Packages</a><a href="#process">Process</a><a href="#results">Results</a><a href="#faq">FAQ</a><a href="#book" class="nc">Book Free Consult</a></div><button class="mt" onclick="document.getElementById('mm').classList.toggle('op')">&#9776;</button><div class="mm" id="mm"><a href="#packages" onclick="this.parentElement.classList.remove('op')">Packages</a><a href="#process" onclick="this.parentElement.classList.remove('op')">Process</a><a href="#results" onclick="this.parentElement.classList.remove('op')">Results</a><a href="#faq" onclick="this.parentElement.classList.remove('op')">FAQ</a><a href="#book" class="nc" onclick="this.parentElement.classList.remove('op')">Book Free Consult</a></div></div></nav>
+
+<section class="hero" id="hero"><div class="hg"></div><div class="hg2"></div><div class="hgrid"></div><div class="ctr"><div class="hc">
+<div class="hb"><span class="pulse"></span>Accepting 3 new clients this quarter</div>
+<h1>Your data pipelines<br>are broken. <em>We fix<br>them in weeks.</em></h1>
+<p class="hs">Productized data engineering packages with fixed pricing on AWS, Azure &amp; GCP. No scope creep. No endless proposals. Just production-ready infrastructure.</p>
+<div class="ha"><a href="#book" class="bp">Book Free Strategy Call <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></a><a href="#packages" class="bs">See Packages &amp; Pricing</a></div>
+<div class="hp"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>50+ projects delivered</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>AWS / GCP / Azure</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>UK-based team</span></div>
+</div></div></section>
+
+<div class="mw"><div class="mi-inner"><span>Snowflake</span><span>BigQuery</span><span>Redshift</span><span>dbt</span><span>Airflow</span><span>Dagster</span><span>Prefect</span><span>Kafka</span><span>Spark</span><span>Terraform</span><span>Fivetran</span><span>Airbyte</span><span>Snowflake</span><span>BigQuery</span><span>Redshift</span><span>dbt</span><span>Airflow</span><span>Dagster</span><span>Prefect</span><span>Kafka</span><span>Spark</span><span>Terraform</span><span>Fivetran</span><span>Airbyte</span></div></div>
+
+<section class="sec"><div class="ctr">
+<div class="sl rv">The Problem</div>
+<h2 class="st rv d1">Traditional consultancies<br>drain your budget</h2>
+<p class="sd rv d2">You hire a consultancy, they spend 3 months &ldquo;discovering requirements,&rdquo; and you end up with a bloated SOW and half-built pipelines.</p>
+<div class="bg">
+<div class="bc rv"><div class="bi">&#128184;</div><h3>Budget black holes</h3><p>Hourly billing turns a &pound;30k project into &pound;90k before you see a dashboard.</p></div>
+<div class="bc rv d1"><div class="bi">&#128012;</div><h3>Months of &ldquo;discovery&rdquo;</h3><p>Endless requirements gathering and committee approvals delay value by quarters.</p></div>
+<div class="bc rv d2"><div class="bi">&#128273;</div><h3>Key-person risk</h3><p>Everything runs through one senior engineer. When they leave, it&rsquo;s a mystery.</p></div>
+<div class="bc rv d3"><div class="bi">&#128200;</div><h3>Delayed ROI</h3><p>Leadership makes gut-feel decisions because the platform won&rsquo;t be ready for 6 months.</p></div>
+</div></div></section>
+
+<section class="sec" id="packages"><div class="ctr">
+<div class="sl rv">Our Packages</div>
+<h2 class="st rv d1">Fixed price. Fixed scope.<br>Delivered in weeks.</h2>
+<p class="sd rv d2">Every engagement includes documentation, handover training, and 30 days of support.</p>
+<div class="pg">
+<div class="pc rv"><div class="ptg">Foundation</div><h3 class="pn">Data Pipeline Builder</h3><p class="pds">Production-ready ETL/ELT pipelines from SaaS sources to Snowflake, BigQuery, or Redshift.</p><ul class="pfl"><li>Up to 10 source integrations</li><li>Data quality checks &amp; monitoring</li><li>Full documentation &amp; training</li></ul><div class="pft"><span class="ptm">&#9201; 3&ndash;4 weeks</span><a href="#book" class="pct">Get Started</a></div></div>
+<div class="pc f rv d1"><span class="pb2">Popular</span><div class="ptg">Growth</div><h3 class="pn">Modern ETL Overhaul</h3><p class="pds">Migrate legacy ETL (SSIS, Informatica) to modern stack with dbt + cloud warehouse.</p><ul class="pfl"><li>Legacy audit &amp; migration roadmap</li><li>Automated testing &amp; CI/CD</li><li>Cost optimization &amp; tuning</li><li>30-day post-launch support</li></ul><div class="pft"><span class="ptm">&#9201; 4&ndash;6 weeks</span><a href="#book" class="pct">Get Started</a></div></div>
+<div class="pc rv d2"><div class="ptg">Scale</div><h3 class="pn">Real-Time Streaming</h3><p class="pds">Kafka/Pub-Sub + Spark/Flink streaming with sink to warehouse, dashboards, and alerting.</p><ul class="pfl"><li>Event-driven architecture design</li><li>Real-time monitoring dashboards</li><li>Auto-scaling &amp; failover config</li></ul><div class="pft"><span class="ptm">&#9201; 5&ndash;7 weeks</span><a href="#book" class="pct">Get Started</a></div></div>
+</div></div></section>
+
+<section class="sec" id="process"><div class="ctr">
+<div class="sl rv">How It Works</div>
+<h2 class="st rv d1">From call to production<br>in four steps</h2>
+<p class="sd rv d2">No 40-page proposals. No procurement circus.</p>
+<div class="ssg rv">
+<div class="sc2"><div class="sn">01</div><h3>Free Strategy Call</h3><p>30-minute call to diagnose your challenges and recommend the right package.</p></div>
+<div class="sc2"><div class="sn">02</div><h3>Technical Scoping</h3><p>We audit your stack and send a fixed-price proposal within 48 hours.</p></div>
+<div class="sc2"><div class="sn">03</div><h3>Build &amp; Iterate</h3><p>Weekly demos using proven templates. You see working results early.</p></div>
+<div class="sc2"><div class="sn">04</div><h3>Launch &amp; Support</h3><p>Full handover with docs, training, and 30 days of post-launch support.</p></div>
+</div></div></section>
+
+<section class="sec" id="results"><div class="ctr">
+<div class="sl rv">Results</div>
+<h2 class="st rv d1">Trusted by data teams<br>who don&rsquo;t waste time</h2>
+<div style="margin-bottom:56px"></div>
+<div class="sr rv">
+<div class="sta"><div class="stv">50+</div><div class="stl">Projects delivered</div></div>
+<div class="sta"><div class="stv">3.2&times;</div><div class="stl">Faster delivery</div></div>
+<div class="sta"><div class="stv">40%</div><div class="stl">Avg. cost savings</div></div>
+<div class="sta"><div class="stv">97%</div><div class="stl">Client retention</div></div>
+</div>
+<div class="tg">
+<div class="tc rv"><p class="tq">&ldquo;We&rsquo;d been quoted 6 months and &pound;120k. Neo Analytica delivered our pipeline migration in 5 weeks at a fraction of the cost.&rdquo;</p><div class="tau"><div class="tav">JH</div><div><div class="tnm">James H.</div><div class="trl">Head of Data, Series B FinTech</div></div></div></div>
+<div class="tc rv d1"><p class="tq">&ldquo;The productized approach was exactly what we needed. Working data platform in weeks, not months of architecture debates.&rdquo;</p><div class="tau"><div class="tav">SP</div><div><div class="tnm">Sarah P.</div><div class="trl">CTO, E-commerce Scale-up</div></div></div></div>
+<div class="tc rv d2"><p class="tq">&ldquo;Zero vendor lock-in. After handover, my team owned everything and maintained it independently.&rdquo;</p><div class="tau"><div class="tav">MK</div><div><div class="tnm">Michael K.</div><div class="trl">VP Engineering, HealthTech</div></div></div></div>
+</div></div></section>
+
+<section class="sec"><div class="ctr">
+<div class="mag rv">
+<div class="mgc">
+<div class="sl">Free Resource</div>
+<h2 style="font-family:'Instrument Serif',serif;font-size:28px;letter-spacing:-.5px;margin-bottom:12px;">The Data Stack Decision Framework</h2>
+<p style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:8px;">A 12-page guide for choosing the right cloud warehouse, orchestration tools, and transformation layer &mdash; without overspending. Used by 200+ data teams.</p>
+<div class="ef"><input type="email" class="ei" placeholder="you@company.com" id="leadEmail"><button class="eb" onclick="handleSubscribe()">Download Free &rarr;</button></div>
+<p style="font-size:11px;color:var(--text3);margin-top:12px;">No spam. Unsubscribe anytime.</p>
+</div>
+<div class="mgv"><div class="mgd"><div class="ln" style="width:50%;background:var(--accent);opacity:0.5"></div><div class="ln" style="width:70%;background:var(--border2)"></div><div class="ln" style="width:100%;background:var(--border2)"></div><div class="ln" style="width:85%;background:var(--border2)"></div><div style="flex:1;background:var(--surface);border-radius:8px;border:1px solid var(--border);margin:12px 0"></div><div class="ln" style="width:60%;background:var(--border2)"></div><div class="ln" style="width:100%;background:var(--border2)"></div></div></div>
+</div></div></section>
+
+<section class="sec" id="faq"><div class="ctr">
+<div class="sl rv">FAQ</div>
+<h2 class="st rv d1">Common questions</h2>
+<p class="sd rv d2">Still curious? Book a free call and we&rsquo;ll answer everything.</p>
+<div class="fqg">
+<details class="rv"><summary>What if my project doesn&rsquo;t fit a package? <svg class="ic" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"/></svg></summary><p>Most fit with minor adjustments. For unique needs, we do custom scoping &mdash; still fixed price.</p></details>
+<details class="rv d1"><summary>Which cloud platforms? <svg class="ic" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"/></svg></summary><p>AWS, GCP, and Azure. Templates are cloud-agnostic at the logic layer, optimized per platform.</p></details>
+<details class="rv"><summary>What happens after the project? <svg class="ic" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"/></svg></summary><p>30 days post-launch support, full documentation, and training. Optional retainers available.</p></details>
+<details class="rv d1"><summary>How is this different from freelancers? <svg class="ic" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"/></svg></summary><p>We use battle-tested templates from 50+ projects. Faster, fewer bugs, a team not a single point of failure.</p></details>
+<details class="rv"><summary>Startups or enterprise? <svg class="ic" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"/></svg></summary><p>Both. Our productized model makes enterprise-grade data engineering accessible to Series A+ startups.</p></details>
+<details class="rv d1"><summary>What&rsquo;s the investment range? <svg class="ic" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"/></svg></summary><p>&pound;8,000 to &pound;35,000. Every penny scoped upfront &mdash; no surprises.</p></details>
+</div></div></section>
+
+<section class="fc" id="book"><div class="ctr" style="position:relative;z-index:2">
+<div class="sl">Let&rsquo;s Talk</div>
+<h2 class="st" style="max-width:600px;margin:0 auto 16px">Stop burning budget<br>on consultants who<br>over-promise</h2>
+<p style="font-size:16px;color:var(--text2);max-width:480px;margin:0 auto 16px;line-height:1.7">Book a free 30-minute strategy call. Honest assessment &mdash; even if that means telling you that you don&rsquo;t need us.</p>
+<p class="ur">&#9889; 1 spot remaining for Q1 2026</p>
+<a href="https://neoanalytica.co.uk/discovery-call" class="bp" style="font-size:16px;padding:16px 36px">Book Your Free Strategy Call <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></a>
+<div class="gu"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>Free, no-obligation</span><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>Fixed pricing in 48hrs</span><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>Zero vendor lock-in</span></div>
+</div></section>
+
+<footer class="fot"><div class="ctr foti"><p>&copy; 2026 Neo Analytica. London, UK.</p><div class="fol"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">LinkedIn</a></div></div></footer>
+
+<div class="sb" id="stickyBar"><div class="ctr"><p>Ready to fix your data pipelines?</p><a href="#book" class="bp">Book Free Consult &rarr;</a></div></div>
+
+<script>
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('s',window.scrollY>30));
+const sb=document.getElementById('stickyBar'),he=document.getElementById('hero');
+new IntersectionObserver(([e])=>sb.classList.toggle('v',!e.isIntersecting)).observe(he);
+const ro=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vi');ro.unobserve(e.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+function handleSubscribe(){const e=document.getElementById('leadEmail').value;if(e&&e.includes('@')){fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e,source:'lead_magnet',magnetName:'data-stack-framework'})}).then(()=>{document.getElementById('leadEmail').value='';document.getElementById('leadEmail').placeholder='Check your inbox!';})}}
+let buf='';document.addEventListener('keydown',e=>{buf+=e.key;if(buf.length>10)buf=buf.slice(-10);if(buf.includes('/login')){buf='';window.location.href='/login'}});
+</script>
+</body>
+</html>
