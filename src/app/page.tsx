@@ -3,11 +3,10 @@ import StickyBar from "@/components/StickyBar";
 import LoginDetector from "@/components/LoginDetector";
 import ScrollReveal from "@/components/ScrollReveal";
 import SubscribeForm from "@/components/SubscribeForm";
+import FaqAccordion from "@/components/FaqAccordion";
 
 const CHK = <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} style={{color:"var(--accent)"}}><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>;
 const ARR = <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M5 12h14m-7-7l7 7-7 7"/></svg>;
-const PLUS = <svg className="ic" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M12 5v14m-7-7h14"/></svg>;
-
 const techs = ["Snowflake","BigQuery","Redshift","dbt","Airflow","Dagster","Prefect","Kafka","Spark","Terraform","Fivetran","Airbyte"];
 
 const problems = [
@@ -41,15 +40,6 @@ const testimonials = [
   { q: "We\u2019d been quoted 6 months and \u00a3120k. Neo Analytica delivered our pipeline migration in 5 weeks at a fraction of the cost.", n: "James H.", r: "Head of Data, Series B FinTech", i: "JH" },
   { q: "The productized approach was exactly what we needed. Working data platform in weeks, not months of architecture debates.", n: "Sarah P.", r: "CTO, E-commerce Scale-up", i: "SP" },
   { q: "Zero vendor lock-in. After handover, my team owned everything and maintained it independently.", n: "Michael K.", r: "VP Engineering, HealthTech", i: "MK" },
-];
-
-const faqs = [
-  { q: "What if my project doesn\u2019t fit a package?", a: "Most fit with minor adjustments. For unique needs, we do custom scoping \u2014 still fixed price." },
-  { q: "Which cloud platforms?", a: "AWS, GCP, and Azure. Templates are cloud-agnostic at the logic layer, optimized per platform." },
-  { q: "What happens after the project?", a: "30 days post-launch support, full documentation, and training. Optional retainers available." },
-  { q: "How is this different from freelancers?", a: "We use battle-tested templates from 50+ projects. Faster, fewer bugs, a team not a single point of failure." },
-  { q: "Startups or enterprise?", a: "Both. Our productized model makes enterprise-grade data engineering accessible to Series A+ startups." },
-  { q: "What\u2019s the investment range?", a: "\u00a38,000 to \u00a335,000. Every penny scoped upfront \u2014 no surprises." },
 ];
 
 export default function HomePage() {
@@ -205,14 +195,7 @@ export default function HomePage() {
           <div className="sl rv">FAQ</div>
           <h2 className="st rv d1">Common questions</h2>
           <p className="sd rv d2">Still curious? Book a free call and we&rsquo;ll answer everything.</p>
-          <div className="fqg">
-            {faqs.map((f, i) => (
-              <details key={f.q} className={`rv ${i % 2 === 1 ? "d1" : ""}`}>
-                <summary>{f.q} {PLUS}</summary>
-                <p>{f.a}</p>
-              </details>
-            ))}
-          </div>
+          <FaqAccordion />
         </div>
       </section>
 
