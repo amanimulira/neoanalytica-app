@@ -147,13 +147,7 @@ const logos: { name: string; category: string; svg: JSX.Element }[] = [
     name: "BigQuery",
     category: "Warehouse",
     svg: (
-      <svg viewBox="0 0 80 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M32 15v18l2 1 6-6v-2l-6-6 2-7-4 2z" fill="#4386FA" opacity="0.8"/>
-        <path d="M48 15l-4 2 2 7-6 6v2l6 6 2 1V15z" fill="#4386FA" opacity="0.6"/>
-        <path d="M34 17l6 6 6-6-4-4h-4l-4 4z" fill="#4386FA"/>
-        <path d="M34 31l6-6 6 6-4 4h-4l-4-4z" fill="#4386FA" opacity="0.5"/>
-        <path d="M47 33l4 4h3l-5-7-2 3z" fill="#4386FA" opacity="0.7"/>
-      </svg>
+      <img src="/big query.png" alt="BigQuery" width={80} height={48} style={{ objectFit: "contain" }} />
     ),
   },
 ];
