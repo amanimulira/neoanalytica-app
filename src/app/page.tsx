@@ -4,6 +4,10 @@ import LoginDetector from "@/components/LoginDetector";
 import ScrollReveal from "@/components/ScrollReveal";
 import SubscribeForm from "@/components/SubscribeForm";
 import FaqAccordion from "@/components/FaqAccordion";
+import AnimatedCounter from "@/components/AnimatedCounter";
+import HoverCard from "@/components/HoverCard";
+import ParallaxElement from "@/components/ParallaxElement";
+import CursorGlow from "@/components/CursorGlow";
 
 const CHK = <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} style={{color:"var(--accent)"}}><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>;
 const ARR = <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M5 12h14m-7-7l7 7-7 7"/></svg>;
@@ -51,13 +55,16 @@ export default function HomePage() {
 
       {/* HERO */}
       <section className="hero" id="hero">
-        <div className="hg" /><div className="hg2" /><div className="hgrid" />
+        <ParallaxElement speed={0.15} className="hg" />
+        <ParallaxElement speed={0.1} className="hg2" />
+        <div className="hgrid" />
+        <CursorGlow />
         <div className="ctr"><div className="hc">
           <div className="hb"><span className="pulse" />Accepting 3 new clients this quarter</div>
           <h1>Your data pipelines<br />are broken. <em>We fix<br />them in weeks.</em></h1>
           <p className="hs">Productized data engineering packages with fixed pricing on AWS, Azure &amp; GCP. No scope creep. No endless proposals. Just production-ready infrastructure.</p>
           <div className="ha">
-            <a href="#book" className="bp">Book Free Strategy Call {ARR}</a>
+            <a href="#book" className="bp btn-ripple">Book Free Strategy Call {ARR}</a>
             <a href="#packages" className="bs">See Packages &amp; Pricing</a>
           </div>
           <div className="hp">
@@ -83,11 +90,11 @@ export default function HomePage() {
           <p className="sd rv d2">You hire a consultancy, they spend 3 months &ldquo;discovering requirements,&rdquo; and you end up with a bloated SOW and half-built pipelines.</p>
           <div className="bg">
             {problems.map((p, i) => (
-              <div key={p.title} className={`bc rv ${i > 0 ? `d${i}` : ""}`}>
+              <HoverCard key={p.title} className={`bc rv ${i > 0 ? `d${i}` : ""}`}>
                 <div className="bi">{p.icon}</div>
                 <h3>{p.title}</h3>
                 <p>{p.desc}</p>
-              </div>
+              </HoverCard>
             ))}
           </div>
         </div>
@@ -101,17 +108,17 @@ export default function HomePage() {
           <p className="sd rv d2">Every engagement includes documentation, handover training, and 30 days of support.</p>
           <div className="pg">
             {packages.map((pkg, i) => (
-              <div key={pkg.name} className={`pc rv ${i > 0 ? `d${i}` : ""} ${pkg.featured ? "f" : ""}`}>
+              <HoverCard key={pkg.name} className={`pc rv ${i > 0 ? `d${i}` : ""} ${pkg.featured ? "f" : ""}`}>
                 {pkg.featured && <span className="pb2">Popular</span>}
                 <div className="ptg">{pkg.tag}</div>
                 <h3 className="pn">{pkg.name}</h3>
                 <p className="pds">{pkg.desc}</p>
                 <ul className="pfl">{pkg.features.map((f) => <li key={f}>{f}</li>)}</ul>
                 <div className="pft">
-                  <span className="ptm">\u23f1 {pkg.time}</span>
+                  <span className="ptm">{"\u23f1"} {pkg.time}</span>
                   <a href="#book" className="pct">Get Started</a>
                 </div>
-              </div>
+              </HoverCard>
             ))}
           </div>
         </div>
@@ -144,20 +151,20 @@ export default function HomePage() {
           <div className="sr rv">
             {stats.map((s) => (
               <div key={s.l} className="sta">
-                <div className="stv">{s.v}</div>
+                <AnimatedCounter end={s.v} className="stv" />
                 <div className="stl">{s.l}</div>
               </div>
             ))}
           </div>
           <div className="tg">
             {testimonials.map((t, i) => (
-              <div key={t.n} className={`tc rv ${i > 0 ? `d${i}` : ""}`}>
+              <HoverCard key={t.n} className={`tc rv ${i > 0 ? `d${i}` : ""}`}>
                 <p className="tq">&ldquo;{t.q}&rdquo;</p>
                 <div className="tau">
                   <div className="tav">{t.i}</div>
                   <div><div className="tnm">{t.n}</div><div className="trl">{t.r}</div></div>
                 </div>
-              </div>
+              </HoverCard>
             ))}
           </div>
         </div>
@@ -205,8 +212,8 @@ export default function HomePage() {
           <div className="sl">Let&rsquo;s Talk</div>
           <h2 className="st" style={{ maxWidth: 600, margin: "0 auto 16px" }}>Stop burning budget<br />on consultants who<br />over-promise</h2>
           <p style={{ fontSize: 16, color: "var(--text2)", maxWidth: 480, margin: "0 auto 16px", lineHeight: 1.7 }}>Book a free 30-minute strategy call. Honest assessment &mdash; even if that means telling you that you don&rsquo;t need us.</p>
-          <p className="ur">\u26a1 1 spot remaining for Q1 2026</p>
-          <a href="https://neoanalytica.co.uk/discovery-call" className="bp" style={{ fontSize: 16, padding: "16px 36px" }}>
+          <p className="ur">{"\u26a1"} 1 spot remaining for Q1 2026</p>
+          <a href="https://neoanalytica.co.uk/discovery-call" className="bp btn-ripple" style={{ fontSize: 16, padding: "16px 36px" }}>
             Book Your Free Strategy Call <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
           </a>
           <div className="gu">

@@ -13,20 +13,34 @@ const faqs = [
 ];
 
 export default function FaqAccordion() {
-  const [allOpen, setAllOpen] = useState(false);
+  const [openItems, setOpenItems] = useState<Set<number>>(new Set());
+
+  const toggle = (i: number) => {
+    setOpenItems((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
+      return next;
+    });
+  };
 
   return (
     <div className="fqg">
-      {faqs.map((f, i) => (
-        <div
-          key={f.q}
-          className={`fq-item rv ${i % 2 === 1 ? "d1" : ""} ${allOpen ? "open" : ""}`}
-          onClick={() => setAllOpen(!allOpen)}
-        >
-          <div className="fq-summary">{f.q} {PLUS}</div>
-          {allOpen && <p>{f.a}</p>}
-        </div>
-      ))}
+      {faqs.map((f, i) => {
+        const isOpen = openItems.has(i);
+        return (
+          <div
+            key={f.q}
+            className={`fq-item rv ${i % 2 === 1 ? "d1" : ""} ${isOpen ? "open" : ""}`}
+            onClick={() => toggle(i)}
+          >
+            <div className="fq-summary">{f.q} {PLUS}</div>
+            <div className="fq-answer">
+              <p>{f.a}</p>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
