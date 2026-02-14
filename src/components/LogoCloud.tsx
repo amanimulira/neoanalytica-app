@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const logos: { name: string; category: string; svg: JSX.Element }[] = [
   {
@@ -159,29 +159,45 @@ const logos: { name: string; category: string; svg: JSX.Element }[] = [
 ];
 
 export default function LogoCloud() {
+  const [paused, setPaused] = useState(false);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   return (
-    <section className="logo-cloud-section">
+    <section className="lc-section">
       <div className="ctr">
-        <div className="lc-header rv">
+        <div className="lc-header">
           <span className="lc-label">Trusted Stack</span>
           <p className="lc-sub">We build on the platforms you already trust</p>
         </div>
-        <div className="lc-grid">
-          {logos.map((logo, i) => (
-            <div
-              key={logo.name}
-              className={`lc-item rv${hoveredIdx !== null && hoveredIdx !== i ? " dimmed" : ""}${hoveredIdx === i ? " active" : ""}`}
-              style={{ transitionDelay: `${i * 0.05}s` }}
-              onMouseEnter={() => setHoveredIdx(i)}
-              onMouseLeave={() => setHoveredIdx(null)}
-            >
-              <div className="lc-icon">{logo.svg}</div>
-              <span className="lc-name">{logo.name}</span>
-              <span className="lc-cat">{logo.category}</span>
-            </div>
-          ))}
+      </div>
+      <div
+        className="lc-carousel"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => { setPaused(false); setHoveredIdx(null); }}
+      >
+        <div className="lc-fade lc-fade-l" />
+        <div className="lc-fade lc-fade-r" />
+        <div
+          ref={trackRef}
+          className="lc-track"
+          style={{ animationPlayState: paused ? "paused" : "running" }}
+        >
+          {[...logos, ...logos].map((logo, i) => {
+            const realIdx = i % logos.length;
+            return (
+              <div
+                key={`${logo.name}-${i}`}
+                className={`lc-item${hoveredIdx !== null && hoveredIdx !== realIdx ? " dimmed" : ""}${hoveredIdx === realIdx ? " active" : ""}`}
+                onMouseEnter={() => setHoveredIdx(realIdx)}
+                onMouseLeave={() => setHoveredIdx(null)}
+              >
+                <div className="lc-icon">{logo.svg}</div>
+                <span className="lc-name">{logo.name}</span>
+                <span className="lc-cat">{logo.category}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
