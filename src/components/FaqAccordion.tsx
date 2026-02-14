@@ -31,7 +31,7 @@ export default function FaqAccordion() {
         return (
           <div
             key={f.q}
-            className={`fq-item rv ${i % 2 === 1 ? "d1" : ""} ${isOpen ? "open" : ""}`}
+            className={`fq-item ${isOpen ? "open" : ""}`}
             onClick={() => toggle(i)}
           >
             <div className="fq-summary">{f.q} {PLUS}</div>
