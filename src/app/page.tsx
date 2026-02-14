@@ -172,10 +172,10 @@ export default function HomePage() {
           <div className="mag rv">
             <div className="mgc">
               <div className="sl">Free Resource</div>
-              <h2 style={{ fontFamily: "'Instrument Serif',serif", fontSize: 28, letterSpacing: "-.5px", marginBottom: 12 }}>The Data Stack Decision Framework</h2>
-              <p style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.7, marginBottom: 8 }}>A 12-page guide for choosing the right cloud warehouse, orchestration tools, and transformation layer &mdash; without overspending. Used by 200+ data teams.</p>
+              <h2 className="mag-title">The Data Stack Decision Framework</h2>
+              <p className="mag-desc">A 12-page guide for choosing the right cloud warehouse, orchestration tools, and transformation layer &mdash; without overspending. Used by 200+ data teams.</p>
               <SubscribeForm source="lead_magnet" magnetName="data-stack-framework" />
-              <p style={{ fontSize: 11, color: "var(--text3)", marginTop: 12 }}>No spam. Unsubscribe anytime.</p>
+              <p className="mag-fine">No spam. Unsubscribe anytime.</p>
             </div>
             <div className="mgv">
               <div className="mgd">
@@ -206,10 +206,10 @@ export default function HomePage() {
       <section className="fc" id="book">
         <div className="ctr" style={{ position: "relative", zIndex: 2 }}>
           <div className="sl">Let&rsquo;s Talk</div>
-          <h2 className="st" style={{ maxWidth: 600, margin: "0 auto 16px" }}>Stop burning budget<br />on consultants who<br />over-promise</h2>
-          <p style={{ fontSize: 16, color: "var(--text2)", maxWidth: 480, margin: "0 auto 16px", lineHeight: 1.7 }}>Book a free 30-minute strategy call. Honest assessment &mdash; even if that means telling you that you don&rsquo;t need us.</p>
+          <h2 className="st fc-h">Stop burning budget<br />on consultants who<br />over-promise</h2>
+          <p className="fc-desc">Book a free 30-minute strategy call. Honest assessment &mdash; even if that means telling you that you don&rsquo;t need us.</p>
           <p className="ur">{"\u26a1"} 1 spot remaining for Q1 2026</p>
-          <a href="https://neoanalytica.co.uk/discovery-call" className="bp btn-ripple" style={{ fontSize: 16, padding: "16px 36px" }}>
+          <a href="https://neoanalytica.co.uk/discovery-call" className="bp btn-ripple fc-cta">
             Book Your Free Strategy Call <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
           </a>
           <div className="gu">
